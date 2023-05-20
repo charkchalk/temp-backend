@@ -7,6 +7,7 @@ import OrganizationRoute from "./controllers/organization";
 import PersonRoute from "./controllers/person";
 import PlaceRoute from "./controllers/place";
 import TagRoute from "./controllers/tag";
+import TimeRangeRoute from "./controllers/time-range";
 
 const fastify = Fastify({ logger: true });
 
@@ -18,6 +19,7 @@ void fastify.register(TagRoute, { prefix: "/tags" });
 void fastify.register(PlaceRoute, { prefix: "/places" });
 void fastify.register(PersonRoute, { prefix: "/persons" });
 void fastify.register(DateRangeRoute, { prefix: "/range/date" });
+void fastify.register(TimeRangeRoute, { prefix: "/range/time" });
 
 fastify.listen({ port: 3000 }, err => {
   if (err) {

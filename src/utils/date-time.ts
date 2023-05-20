@@ -5,3 +5,11 @@ export function getDate(date: Date) {
     day: "2-digit",
   });
 }
+
+export function getTime(date: Date) {
+  return date.toLocaleTimeString("zh-TW", {
+    hour12: false,
+    hour: "2-digit",
+    minute: "2-digit",
+  });
+}
