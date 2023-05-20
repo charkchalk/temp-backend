@@ -1,9 +1,13 @@
 import Fastify from "fastify";
 import fastifyPrismaClient from "fastify-prisma-client";
 
+import IndexRoute from "./controllers/index";
+
 const fastify = Fastify({ logger: true });
 
 void fastify.register(fastifyPrismaClient);
+
+void fastify.register(IndexRoute, { prefix: "/" });
 
 fastify.listen({ port: 3000 }, err => {
   if (err) {
