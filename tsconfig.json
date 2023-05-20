@@ -4,6 +4,12 @@
     "outDir": "dist",
     "strict": true,
     "lib": ["esnext"],
+    "moduleResolution": "node",
     "esModuleInterop": true
+  },
+  "include": ["**/*.ts", "**/*.js"],
+  "exclude": ["node_modules", "dist"],
+  "typeAcquisition": {
+    "enable": true
   }
 }
