@@ -3,25 +3,103 @@ generator client {
 }
 
 datasource db {
-  provider = "sqlite"
-  url      = "file:./dev.db"
+  provider = "mysql"
+  url      = env("DATABASE_URL")
 }
 
-model User {
-  id    Int     @id @default(autoincrement())
-  email String  @unique
-  name  String?
-  posts Post[]
+model Organization {
+  id          Int            @id @default(autoincrement())
+  uuid        String         @unique @default(uuid())
+  name        String
+  description String?
+  parentId    Int?
+  parent      Organization?  @relation("OrganizationTree", fields: [parentId], references: [id])
+  children    Organization[] @relation("OrganizationTree")
+
+  Course Course[]
+  // tags
 }
 
-model Post {
+model Tag {
+  id          Int     @id @default(autoincrement())
+  uuid        String  @unique @default(uuid())
+  name        String
+  description String?
+  // tagLimit
+
+  courses Course[] @relation("CourseTag")
+}
+
+model Place {
+  id          Int     @id @default(autoincrement())
+  uuid        String  @unique @default(uuid())
+  name        String
+  description String?
+  parentId    Int?
+  parent      Place?  @relation("PlaceTree", fields: [parentId], references: [id])
+  children    Place[] @relation("PlaceTree")
+
+  courses Course[] @relation("CoursePlace")
+}
+
+model Person {
+  id          Int     @id @default(autoincrement())
+  uuid        String  @unique @default(uuid())
+  name        String
+  description String?
+  link        String?
+
+  courses Course[] @relation("CourseHost")
+}
+
+model DateRange {
+  id          Int      @id @default(autoincrement())
+  uuid        String   @unique @default(uuid())
+  name        String
+  description String?
+  startDate   DateTime @db.Date
+  endDate     DateTime @db.Date
+
+  courses Course[]
+}
+
+enum Weekday {
+  MONDAY
+  TUESDAY
+  WEDNESDAY
+  THURSDAY
+  FRIDAY
+  SATURDAY
+  SUNDAY
+}
+
+model TimeRange {
   id        Int      @id @default(autoincrement())
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-  title     String
-  content   String?
-  published Boolean  @default(false)
-  viewCount Int      @default(0)
-  author    User?    @relation(fields: [authorId], references: [id])
-  authorId  Int?
+  weekday   Weekday
+  startTime DateTime @db.Time
+  endTime   DateTime @db.Time
+
+  courses Course[] @relation("CourseTimeRange")
+
+  @@unique([weekday, startTime, endTime])
+}
+
+model Course {
+  id             Int          @id @default(autoincrement())
+  uuid           String       @unique @default(uuid())
+  code           String?
+  // onBranch
+  // predecessor
+  name           String
+  description    String?
+  link           String?
+  credit         Int
+  organizationId Int
+  organization   Organization @relation(fields: [organizationId], references: [id])
+  dateRangeId    Int
+  dateRange      DateRange    @relation(fields: [dateRangeId], references: [id])
+  timeRanges     TimeRange[]  @relation("CourseTimeRange")
+  hosts          Person[]     @relation("CourseHost")
+  places         Place[]      @relation("CoursePlace")
+  tags           Tag[]        @relation("CourseTag")
 }
