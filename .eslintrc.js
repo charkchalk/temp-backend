@@ -17,6 +17,7 @@ module.exports = {
   },
   ignorePatterns: [".eslintrc.js", "node_modules", "dist"],
   rules: {
+    "@typescript-eslint/require-await": "off",
     "simple-import-sort/imports": "error",
     "simple-import-sort/exports": "error",
     "import/first": "error",
