@@ -3,6 +3,7 @@ import fastifyPrismaClient from "fastify-prisma-client";
 
 import IndexRoute from "./controllers/index";
 import OrganizationRoute from "./controllers/organization";
+import PersonRoute from "./controllers/person";
 import PlaceRoute from "./controllers/place";
 import TagRoute from "./controllers/tag";
 
@@ -14,6 +15,7 @@ void fastify.register(IndexRoute, { prefix: "/" });
 void fastify.register(OrganizationRoute, { prefix: "/organizations" });
 void fastify.register(TagRoute, { prefix: "/tags" });
 void fastify.register(PlaceRoute, { prefix: "/places" });
+void fastify.register(PersonRoute, { prefix: "/persons" });
 
 fastify.listen({ port: 3000 }, err => {
   if (err) {
