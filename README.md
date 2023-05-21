@@ -36,6 +36,22 @@ pnpm prisma migrate dev
 pnpm prisma generate
 ```
 
+### (Optional) Seed database
+
+To seed all tables, run the following command.
+
+```bash=
+pnpm seed
+```
+
+Or you can seed a specific table by running the following command.
+
+For detailed commands, please check the `scripts` section in [`package.json`](package.json).
+
+```bash=
+pnpm seed:<table_name>
+```
+
 ### 6. Start server
 
 ```bash=

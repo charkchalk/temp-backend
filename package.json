@@ -3,6 +3,14 @@
   "version": "1.0.0",
   "license": "MIT",
   "scripts": {
+    "seed": "pnpm seed:dateRange && pnpm seed:organization && pnpm seed:person && pnpm seed:place && pnpm seed:tag && pnpm seed:timeRange && pnpm seed:course",
+    "seed:dateRange": "ts-node -e \"import seeder from './prisma/seeds/date-range'; seeder();\"",
+    "seed:organization": "ts-node -e \"import seeder from './prisma/seeds/organization'; seeder();\"",
+    "seed:person": "ts-node -e \"import seeder from './prisma/seeds/person'; seeder();\"",
+    "seed:place": "ts-node -e \"import seeder from './prisma/seeds/place'; seeder();\"",
+    "seed:tag": "ts-node -e \"import seeder from './prisma/seeds/tag'; seeder();\"",
+    "seed:timeRange": "ts-node -e \"import seeder from './prisma/seeds/time-range'; seeder();\"",
+    "seed:course": "ts-node -e \"import seeder from './prisma/seeds/z-course'; seeder();\"",
     "dev": "ts-node src/index.ts",
     "format": "pnpm format:prettier && pnpm format:eslint",
     "format:eslint": "eslint --fix .",
@@ -35,8 +43,5 @@
     "prisma": "4.14.1",
     "ts-node": "10.9.1",
     "typescript": "5.0.4"
-  },
-  "prisma": {
-    "seed": "ts-node prisma/seed.ts"
   }
 }

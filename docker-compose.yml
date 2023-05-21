@@ -7,6 +7,7 @@ services:
     stdin_open: true
     tty: true
     environment:
+      TZ: Asia/Taipei
       MYSQL_ROOT_PASSWORD: ${DB_PASSWORD}
       MYSQL_DATABASE: ${DB_DATABASE}
       MYSQL_PORT: ${DB_PORT}
@@ -22,5 +23,6 @@ services:
     ports:
       - 8080:80
     environment:
+      TZ: Asia/Taipei
       PMA_HOST: db
       PMA_PORT: ${DB_PORT}
