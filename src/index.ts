@@ -1,6 +1,7 @@
 import Fastify from "fastify";
 import fastifyPrismaClient from "fastify-prisma-client";
 
+import CourseRoute from "./controllers/course";
 import DateRangeRoute from "./controllers/date-range";
 import IndexRoute from "./controllers/index";
 import OrganizationRoute from "./controllers/organization";
@@ -20,6 +21,7 @@ void fastify.register(PlaceRoute, { prefix: "/places" });
 void fastify.register(PersonRoute, { prefix: "/persons" });
 void fastify.register(DateRangeRoute, { prefix: "/range/date" });
 void fastify.register(TimeRangeRoute, { prefix: "/range/time" });
+void fastify.register(CourseRoute, { prefix: "/courses" });
 
 fastify.listen({ port: 3000 }, err => {
   if (err) {
