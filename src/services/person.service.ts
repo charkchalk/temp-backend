@@ -4,8 +4,17 @@ import type { FastifyInstance } from "fastify";
 import type PaginateOptions from "../types/paginate-options";
 import type Paginated from "../types/paginated";
 
-const PersonService = { getAll, getOne };
+const PersonService = { getAll, getOne, toPublic };
 export default PersonService;
+
+export async function toPublic(person: Person): Promise<PublicPerson> {
+  return {
+    uuid: person.uuid,
+    name: person.name,
+    description: person.description,
+    link: person.link,
+  };
+}
 
 async function getAll(
   fastify: FastifyInstance,
@@ -20,19 +29,12 @@ async function getAll(
     take: size,
   });
 
-  const exposedPersons = persons.map(person => {
-    return {
-      uuid: person.uuid,
-      name: person.name,
-      description: person.description,
-      link: person.link,
-    };
-  });
+  const exposedPersons = persons.map(toPublic);
 
   return {
     total: Math.ceil(totalAmount / size) || 1,
     current: page,
-    data: exposedPersons,
+    data: await Promise.all(exposedPersons),
   };
 }
 
@@ -40,22 +42,18 @@ async function getOne(
   fastify: FastifyInstance,
   where: Prisma.PersonWhereUniqueInput,
 ): Promise<PublicPerson | null> {
+  if (!where.id && !where.uuid) return null;
+
   const person = await fastify.prisma.person.findUnique({
     where: {
+      id: where.id,
       uuid: where.uuid,
     },
   });
 
-  if (!person) {
-    return null;
-  }
+  if (!person) return null;
 
-  return {
-    uuid: person.uuid,
-    name: person.name,
-    description: person.description,
-    link: person.link,
-  };
+  return await toPublic(person);
 }
 
 export type PublicPerson = Omit<Person, "id">;

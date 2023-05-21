@@ -5,8 +5,18 @@ import type PaginateOptions from "../types/paginate-options";
 import type Paginated from "../types/paginated";
 import { getDate } from "../utils/date-time";
 
-const DateRangeService = { getAll, getOne };
+const DateRangeService = { getAll, getOne, toPublic };
 export default DateRangeService;
+
+export async function toPublic(dateRange: DateRange): Promise<PublicDateRange> {
+  return {
+    uuid: dateRange.uuid,
+    name: dateRange.name,
+    description: dateRange.description,
+    startDate: getDate(dateRange.startDate),
+    endDate: getDate(dateRange.endDate),
+  };
+}
 
 async function getAll(
   fastify: FastifyInstance,
@@ -21,20 +31,12 @@ async function getAll(
     take: size,
   });
 
-  const exposedDateRanges = dateRanges.map(dateRange => {
-    return {
-      uuid: dateRange.uuid,
-      name: dateRange.name,
-      description: dateRange.description,
-      startDate: getDate(dateRange.startDate),
-      endDate: getDate(dateRange.endDate),
-    };
-  });
+  const exposedDateRanges = dateRanges.map(toPublic);
 
   return {
     total: Math.ceil(totalAmount / size) || 1,
     current: page,
-    data: exposedDateRanges,
+    data: await Promise.all(exposedDateRanges),
   };
 }
 
@@ -42,8 +44,11 @@ async function getOne(
   fastify: FastifyInstance,
   where: Prisma.DateRangeWhereUniqueInput,
 ): Promise<PublicDateRange | null> {
+  if (!where.id && !where.uuid) return null;
+
   const dateRange = await fastify.prisma.dateRange.findUnique({
     where: {
+      id: where.id,
       uuid: where.uuid,
     },
   });
@@ -52,13 +57,7 @@ async function getOne(
     return null;
   }
 
-  return {
-    uuid: dateRange.uuid,
-    name: dateRange.name,
-    description: dateRange.description,
-    startDate: getDate(dateRange.startDate),
-    endDate: getDate(dateRange.endDate),
-  };
+  return await toPublic(dateRange);
 }
 
 export type PublicDateRange = Omit<

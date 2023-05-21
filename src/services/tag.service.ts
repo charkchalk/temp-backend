@@ -4,8 +4,16 @@ import type { FastifyInstance } from "fastify";
 import type PaginateOptions from "../types/paginate-options";
 import type Paginated from "../types/paginated";
 
-const TagService = { getAll, getOne };
+const TagService = { getAll, getOne, toPublic };
 export default TagService;
+
+export async function toPublic(tag: Tag): Promise<PublicTag> {
+  return {
+    uuid: tag.uuid,
+    name: tag.name,
+    description: tag.description,
+  };
+}
 
 async function getAll(
   fastify: FastifyInstance,
@@ -20,18 +28,12 @@ async function getAll(
     take: size,
   });
 
-  const exposedTags = tags.map(tag => {
-    return {
-      uuid: tag.uuid,
-      name: tag.name,
-      description: tag.description,
-    };
-  });
+  const exposedTags = tags.map(toPublic);
 
   return {
     total: Math.ceil(totalAmount / size) || 1,
     current: page,
-    data: exposedTags,
+    data: await Promise.all(exposedTags),
   };
 }
 
@@ -39,21 +41,18 @@ async function getOne(
   fastify: FastifyInstance,
   where: Prisma.TagWhereUniqueInput,
 ): Promise<PublicTag | null> {
+  if (!where.id && !where.uuid) return null;
+
   const tag = await fastify.prisma.tag.findUnique({
     where: {
+      id: where.id,
       uuid: where.uuid,
     },
   });
 
-  if (!tag) {
-    return null;
-  }
+  if (!tag) return null;
 
-  return {
-    uuid: tag.uuid,
-    name: tag.name,
-    description: tag.description,
-  };
+  return await toPublic(tag);
 }
 
 export type PublicTag = Omit<Tag, "id">;

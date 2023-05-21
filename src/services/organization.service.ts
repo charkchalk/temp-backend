@@ -4,8 +4,22 @@ import type { FastifyInstance } from "fastify";
 import type PaginateOptions from "../types/paginate-options";
 import type Paginated from "../types/paginated";
 
-const OrganizationService = { getAll, getOne };
+const OrganizationService = { getAll, getOne, toPublic };
 export default OrganizationService;
+
+export async function toPublic(
+  organization: Organization,
+  fastify: FastifyInstance,
+): Promise<PublicOrganization> {
+  return {
+    uuid: organization.uuid,
+    name: organization.name,
+    description: organization.description,
+    parent: await getOne(fastify, {
+      id: organization.parentId ?? undefined,
+    }),
+  };
+}
 
 async function getAll(
   fastify: FastifyInstance,
@@ -18,28 +32,16 @@ async function getAll(
   const organizations = await fastify.prisma.organization.findMany({
     skip: (page - 1) * size,
     take: size,
-    include: {
-      parent: true,
-    },
   });
 
-  const exposedOrganizations = await Promise.all(
-    organizations.map(async organization => {
-      return {
-        uuid: organization.uuid,
-        name: organization.name,
-        description: organization.description,
-        parent: await getOne(fastify, {
-          uuid: organization.parent?.uuid,
-        }),
-      };
-    }),
+  const exposedOrganizations = organizations.map(organization =>
+    toPublic(organization, fastify),
   );
 
   return {
     total: Math.ceil(totalAmount / size) || 1,
     current: page,
-    data: exposedOrganizations,
+    data: await Promise.all(exposedOrganizations),
   };
 }
 
@@ -47,29 +49,18 @@ async function getOne(
   fastify: FastifyInstance,
   where: Prisma.OrganizationWhereUniqueInput,
 ): Promise<PublicOrganization | null> {
-  if (!where.uuid) return null;
+  if (!where.id && !where.uuid) return null;
 
   const organization = await fastify.prisma.organization.findUnique({
     where: {
+      id: where.id,
       uuid: where.uuid,
-    },
-    include: {
-      parent: true,
     },
   });
 
   if (!organization) return null;
 
-  const parent = await getOne(fastify, {
-    uuid: organization.parent?.uuid,
-  });
-
-  return {
-    uuid: organization.uuid,
-    name: organization.name,
-    description: organization.description,
-    parent: parent,
-  };
+  return await toPublic(organization, fastify);
 }
 
 export type PublicOrganization = Pick<
