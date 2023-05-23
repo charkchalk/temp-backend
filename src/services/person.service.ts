@@ -32,9 +32,9 @@ async function getAll(
   const exposedPersons = persons.map(toPublic);
 
   return {
-    total: Math.ceil(totalAmount / size) || 1,
-    current: page,
-    data: await Promise.all(exposedPersons),
+    totalPages: Math.ceil(totalAmount / size) || 1,
+    currentPage: page,
+    content: await Promise.all(exposedPersons),
   };
 }
 

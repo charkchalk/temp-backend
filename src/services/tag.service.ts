@@ -31,9 +31,9 @@ async function getAll(
   const exposedTags = tags.map(toPublic);
 
   return {
-    total: Math.ceil(totalAmount / size) || 1,
-    current: page,
-    data: await Promise.all(exposedTags),
+    totalPages: Math.ceil(totalAmount / size) || 1,
+    currentPage: page,
+    content: await Promise.all(exposedTags),
   };
 }
 

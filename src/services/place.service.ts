@@ -37,9 +37,9 @@ async function getAll(
   const exposedPlaces = places.map(place => toPublic(place, fastify));
 
   return {
-    total: Math.ceil(totalAmount / size) || 1,
-    current: page,
-    data: await Promise.all(exposedPlaces),
+    totalPages: Math.ceil(totalAmount / size) || 1,
+    currentPage: page,
+    content: await Promise.all(exposedPlaces),
   };
 }
 
