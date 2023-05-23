@@ -57,9 +57,13 @@ export async function toPublic(
   );
 
   return {
+    id: course.id,
     uuid: course.uuid,
+    code: course.code,
     name: course.name,
     description: course.description,
+    link: course.link,
+    credit: course.credit,
     organization,
     dateRange,
     timeRanges,
@@ -125,7 +129,10 @@ async function getOne(
   return await toPublic(course, fastify);
 }
 
-type PublicCourse = Pick<Course, "uuid" | "name" | "description"> & {
+type PublicCourse = Pick<
+  Course,
+  "id" | "uuid" | "code" | "name" | "description" | "link" | "credit"
+> & {
   organization: PublicOrganization | null;
   dateRange: PublicDateRange | null;
   timeRanges: PublicTimeRange[];
