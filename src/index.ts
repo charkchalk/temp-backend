@@ -1,3 +1,4 @@
+import cors from "@fastify/cors";
 import Fastify from "fastify";
 import fastifyPrismaClient from "fastify-prisma-client";
 
@@ -11,6 +12,10 @@ import TagRoute from "./controllers/tag";
 import TimeRangeRoute from "./controllers/time-range";
 
 const fastify = Fastify({ logger: true });
+
+void fastify.register(cors, {
+  origin: process.env.FRONTEND_URL ?? "",
+});
 
 void fastify.register(fastifyPrismaClient);
 
