@@ -23,15 +23,17 @@ export async function toPublic(
 
 async function getAll(
   fastify: FastifyInstance,
-  options: PaginateOptions,
+  options: PaginateOptions & { where?: Prisma.OrganizationWhereInput } = {},
 ): Promise<Paginated<PublicOrganization[]>> {
+  const { where } = options;
   const page = Number(options.page || 1);
   const size = Number(options.size || 25);
 
-  const totalAmount = await fastify.prisma.organization.count();
+  const totalAmount = await fastify.prisma.organization.count({ where });
   const organizations = await fastify.prisma.organization.findMany({
     skip: (page - 1) * size,
     take: size,
+    where,
   });
 
   const exposedOrganizations = organizations.map(organization =>

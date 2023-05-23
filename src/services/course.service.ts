@@ -75,15 +75,17 @@ export async function toPublic(
 
 async function getAll(
   fastify: FastifyInstance,
-  options: PaginateOptions,
+  options: PaginateOptions & { where?: Prisma.CourseWhereInput } = {},
 ): Promise<Paginated> {
+  const { where } = options;
   const page = Number(options.page || 1);
   const size = Number(options.size || 25);
 
-  const totalAmount = await fastify.prisma.course.count();
+  const totalAmount = await fastify.prisma.course.count({ where });
   const courses = await fastify.prisma.course.findMany({
     skip: (page - 1) * size,
     take: size,
+    where,
     include: {
       organization: true,
       dateRange: true,

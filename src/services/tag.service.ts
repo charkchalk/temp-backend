@@ -17,15 +17,17 @@ export async function toPublic(tag: Tag): Promise<PublicTag> {
 
 async function getAll(
   fastify: FastifyInstance,
-  options: PaginateOptions,
+  options: PaginateOptions & { where?: Prisma.TagWhereInput } = {},
 ): Promise<Paginated<PublicTag[]>> {
+  const { where } = options;
   const page = Number(options.page || 1);
   const size = Number(options.size || 25);
 
-  const totalAmount = await fastify.prisma.tag.count();
+  const totalAmount = await fastify.prisma.tag.count({ where });
   const tags = await fastify.prisma.tag.findMany({
     skip: (page - 1) * size,
     take: size,
+    where,
   });
 
   const exposedTags = tags.map(toPublic);

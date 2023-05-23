@@ -23,15 +23,17 @@ export async function toPublic(
 
 async function getAll(
   fastify: FastifyInstance,
-  options: PaginateOptions,
+  options: PaginateOptions & { where?: Prisma.PlaceWhereInput } = {},
 ): Promise<Paginated<PublicPlace[]>> {
+  const { where } = options;
   const page = Number(options.page || 1);
   const size = Number(options.size || 25);
 
-  const totalAmount = await fastify.prisma.place.count();
+  const totalAmount = await fastify.prisma.place.count({ where });
   const places = await fastify.prisma.place.findMany({
     skip: (page - 1) * size,
     take: size,
+    where,
   });
 
   const exposedPlaces = places.map(place => toPublic(place, fastify));
