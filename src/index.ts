@@ -20,13 +20,13 @@ void fastify.register(cors, {
 void fastify.register(fastifyPrismaClient);
 
 void fastify.register(IndexRoute, { prefix: "/" });
-void fastify.register(OrganizationRoute, { prefix: "/organizations" });
-void fastify.register(TagRoute, { prefix: "/tags" });
-void fastify.register(PlaceRoute, { prefix: "/places" });
-void fastify.register(PersonRoute, { prefix: "/persons" });
+void fastify.register(OrganizationRoute, { prefix: "/organization" });
+void fastify.register(TagRoute, { prefix: "/tag" });
+void fastify.register(PlaceRoute, { prefix: "/place" });
+void fastify.register(PersonRoute, { prefix: "/person" });
 void fastify.register(DateRangeRoute, { prefix: "/range/date" });
 void fastify.register(TimeRangeRoute, { prefix: "/range/time" });
-void fastify.register(CourseRoute, { prefix: "/courses" });
+void fastify.register(CourseRoute, { prefix: "/course" });
 
 fastify.listen({ port: 3000 }, err => {
   if (err) {
