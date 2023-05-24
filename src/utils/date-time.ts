@@ -8,6 +8,7 @@ export function getDate(date: Date) {
 
 export function getTime(date: Date) {
   return date.toLocaleTimeString("zh-TW", {
+    timeZone: "UTC",
     hour12: false,
     hour: "2-digit",
     minute: "2-digit",

@@ -17,12 +17,8 @@ export async function timeRangeSeeder(prisma: PrismaClient) {
   console.log(`Start seeding time-range...`);
   await prisma.timeRange.deleteMany();
   for (const timeRange of timeRanges) {
-    timeRange.startTime = new Date(
-      `2021-01-01T${timeRange.startTime as string}:00.000Z`,
-    );
-    timeRange.endTime = new Date(
-      `2021-01-01T${timeRange.endTime as string}:00.000Z`,
-    );
+    timeRange.startTime = `2023-01-01T${timeRange.startTime as string}:00.000Z`;
+    timeRange.endTime = `2023-01-01T${timeRange.endTime as string}:00.000Z`;
 
     const createdTimeRange = await prisma.timeRange.create({
       data: timeRange,
