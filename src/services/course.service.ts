@@ -31,7 +31,7 @@ export default CourseService;
 export async function toPublic(
   course: FullCourse,
   fastify: FastifyInstance,
-): Promise<PublicCourse | Course> {
+): Promise<PublicCourse> {
   const organization = course.organization
     ? await OrganizationService.toPublic(course.organization, fastify)
     : null;
@@ -76,7 +76,7 @@ export async function toPublic(
 async function getAll(
   fastify: FastifyInstance,
   options: PaginateOptions & { where?: Prisma.CourseWhereInput } = {},
-): Promise<Paginated> {
+): Promise<Paginated<PublicCourse[]>> {
   const { where } = options;
   const page = Number(options.page || 1);
   const size = Number(options.size || 25);
@@ -108,7 +108,7 @@ async function getAll(
 async function getOne(
   fastify: FastifyInstance,
   where: Prisma.OrganizationWhereUniqueInput,
-) {
+): Promise<PublicCourse | null> {
   if (!where.id && !where.uuid) return null;
 
   const course = await fastify.prisma.course.findUnique({
