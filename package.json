@@ -11,6 +11,7 @@
     "seed:tag": "ts-node -e \"import seeder from './prisma/seeds/tag'; seeder();\"",
     "seed:timeRange": "ts-node -e \"import seeder from './prisma/seeds/time-range'; seeder();\"",
     "seed:course": "ts-node -e \"import seeder from './prisma/seeds/z-course'; seeder();\"",
+    "import-data": "ts-node -e \"import seeder from './prisma/data-importer/index'; seeder();\"",
     "dev": "ts-node src/index.ts",
     "format": "pnpm format:prettier && pnpm format:eslint",
     "format:eslint": "eslint --fix .",
