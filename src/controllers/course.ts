@@ -121,6 +121,26 @@ export default async function CourseRoute(fastify: FastifyInstance) {
                 });
             });
             break;
+          case "tag":
+            values.forEach(value => {
+              if (method === "=")
+                OR.push({
+                  tags: {
+                    some: {
+                      uuid: value,
+                    },
+                  },
+                });
+              else if (method === "!=")
+                OR.push({
+                  tags: {
+                    none: {
+                      uuid: value,
+                    },
+                  },
+                });
+            });
+            break;
           case "keyword":
             values.forEach(value => {
               if (method === "=") {
@@ -246,6 +266,7 @@ type SerachBody =
   | DateRangeSearchBody
   | HostSearchBody
   | KeywordSearchBody
+  | TagSearchBody
   | OrganizationSearchBody
   | PlaceSearchBody
   | TimeRangeSearchBody;
@@ -261,6 +282,7 @@ type CreditSearchBody = BasicSearchBody<"credit", string[]>;
 type DateRangeSearchBody = BasicSearchBody<"dateRange", string[]>;
 type HostSearchBody = BasicSearchBody<"host", string[]>;
 type KeywordSearchBody = BasicSearchBody<"keyword", string[]>;
+type TagSearchBody = BasicSearchBody<"tag", string[]>;
 type OrganizationSearchBody = BasicSearchBody<"organization", string[]>;
 type PlaceSearchBody = BasicSearchBody<"place", string[]>;
 type TimeRangeSearchBody = BasicSearchBody<"timeRange", ITimeRange[]>;
