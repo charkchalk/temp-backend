@@ -20,6 +20,8 @@ export async function courseSeeder(prisma: PrismaClient) {
   await prisma.course.deleteMany();
 
   for (const course of courses) {
+    console.log(JSON.stringify(course));
+
     const createdCourse = await prisma.course.create({
       data: course,
     });
