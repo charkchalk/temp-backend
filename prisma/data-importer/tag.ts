@@ -27,7 +27,7 @@ export async function tagSeeder(prisma: PrismaClient) {
   console.log(`Seeding tag finished.`);
 }
 
-const path = Path.resolve(__dirname, "./data/types.json");
+const path = Path.resolve(__dirname, "./data/tags.json");
 const file = FileSystem.readFileSync(path, "utf8");
 
 const tags = JSON.parse(file) as (Prisma.TagCreateInput & { id: any })[];
