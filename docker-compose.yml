@@ -12,6 +12,19 @@ services:
       MYSQL_DATABASE: ${DB_DATABASE}
       MYSQL_PORT: ${DB_PORT}
 
+  api:
+    build: .
+    container_name: charkchalk-api
+    restart: always
+    stdin_open: true
+    tty: true
+    ports:
+      - 80:3000
+    depends_on:
+      - db
+    environment:
+      TZ: Asia/Taipei
+
   phpmyadmin:
     image: phpmyadmin/phpmyadmin
     container_name: charkchalk-phpmyadmin
